@@ -1,0 +1,18 @@
+Description: Layer Stack
+
+Parameters:
+  DeploymentBucket:
+    Type: String
+    Description: This value is obtained from the base template's deployment.
+
+Resources:
+  LambdaLayerVersion:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+      - provided.al2
+      Content:
+        S3Bucket: !Ref DeploymentBucket
+        S3Key: bb.zip
+      Description: Layer for blambda
+      LayerName: blambda-layer

@@ -1,0 +1,69 @@
+Description: Application Stack
+
+Parameters:
+  DeploymentBucket:
+    Type: String
+    Description: This value is obtained from the base template's deployment.
+  LambdaLayerVersion:
+    Type: String
+    Description: LambdaLayer ARN from layer template's deployment.
+
+Resources:
+  FunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+        Version: '2012-10-17'
+      Description: blambda function role
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  BLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: !Ref DeploymentBucket
+        S3Key: handler.zip
+      Handler: hello/hello
+      Layers:
+      - !Ref LambdaLayerVersion
+      Role: !GetAtt FunctionRole.Arn
+      Runtime: provided
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${BLambdaFunction}
+      RetentionInDays: 7
+
+  BLambdaLogGroupRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+        Version: '2012-10-17'
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: !GetAtt LogGroup.Arn
+          Version: '2012-10-17'
+        PolicyName: blambda-lambda-policy
+      Description: LogGroup Role for blambda function

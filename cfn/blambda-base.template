@@ -1,0 +1,5 @@
+Description: blambda foundation stack (minimum resources required to bootstrap blambda for deployment)
+
+Resources:
+  DeploymentBucket:
+    Type: AWS::S3::Bucket
