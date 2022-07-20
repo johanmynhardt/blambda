@@ -72,7 +72,7 @@ Manage function in 3rd template.
 (aws/invoke cfn
  {:op :CreateStack
   :request {:StackName "blambda-base"
-            :TemplateBody (slurp "cfn/blambda-base-foundation.template")}})
+            :TemplateBody (slurp "cfn/blambda-base.template")}})
 
 => {:StackId "arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/blambda-base/24c915d0-03b7-11ed-a4ae-0a4d90c5e978"}
 ```

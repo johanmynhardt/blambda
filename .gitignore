@@ -8,3 +8,4 @@
 .lein-failures
 .nrepl-port
 .cpcache/
+cfn/cloudformation.edn
